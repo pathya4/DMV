@@ -1,0 +1,58 @@
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv("RealEstate_Price.csv")
+df
+
+df.columns = df.columns.str.strip()
+df.columns = df.columns.str.replace(" ", "_")
+
+df.isnul().sum()
+
+
+filtered_df = df[df['Bedrooms'] <= 2]
+filtered_df
+
+
+subset_df = df[["Price", "SqFt", "Offers"]]
+subset_df
+
+
+label_mapping = {"No": 0, "Yes": 1}
+df['Brick'] = df['Brick'].map(label_mapping)
+
+df['Brick']
+
+
+grouped_data = df.groupby(['Neighborhood'])['Price'].mean().reset_index()
+grouped_data
+
+
+df.info()
+
+
+df['Price'] = df['Price'].astype(int)
+
+
+from scipy import stats
+
+df['z_score'] = stats.zscore(df['Price'])
+threshold = 3
+outliers_mask = (df['z_score'] > threshold) | (df['z_score'] < -threshold)
+outliers = df[outliers_mask]
+
+outliers
+
+
+df.loc[103, 'Price'] = df.loc[103, 'Price'] if df.loc[103, 'Price'] <= threshold else df['Price'].median()
+print("Result of the 'Price' column:")
+df['Price']
+
+
+from scipy import stats
+
+df['z_score'] = stats.zscore(df['Price'])
+threshold = 3
+outliers_mask = (df['z_score'] > threshold) | (df['z_score'] < -threshold)
+outliers = df[outliers_mask]
+outliers
